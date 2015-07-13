@@ -7,15 +7,10 @@ class Review < ActiveRecord::Base
 
   def valid_stay
     if !(self.reservation_id && self.reservation.status == "accepted")
-      error_message
-    elsif !created_at
-    elsif !(created_at > self.reservation.checkout)
-      error_message
+      errors.add(:invalid_stay, "You didn't actually stay here")
+    elsif created_at && !(created_at > self.reservation.checkout)
+      errors.add(:invalid_stay, "You didn't actually stay here")
     end
   end
-
-  def error_message
-    errors.add(:invalid_stay, "You didn't actually stay here")
-  end
-
+  
 end

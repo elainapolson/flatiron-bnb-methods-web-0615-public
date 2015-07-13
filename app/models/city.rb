@@ -1,6 +1,7 @@
 class City < ActiveRecord::Base
   has_many :neighborhoods
   has_many :listings, :through => :neighborhoods
+  has_many :reservations, :through => :listings
 
   def city_openings(start_date, end_date)
     start_date = Date.parse(start_date)
@@ -14,20 +15,11 @@ class City < ActiveRecord::Base
   end
 
   def self.highest_ratio_res_to_listings
-    reservations_count = joins(:listings => :reservations).group("cities.name").count
-    listings_count = joins(:listings).group("cities.name").count
-
-    valid_cities = self.all.collect do |city|
-      city if reservations_count[city.name] && listings_count[city.name]
-    end.compact
-
-    valid_cities.max_by do |city|
-      reservations_count[city.name] / listings_count[city.name]
-    end
+    City.all.max_by {|city| city.ratio_res_to_listings}
   end
 
   def self.most_res
-    joins(:listings => :reservations).group("cities.name").order("count (*) desc").first
+    City.all.max_by {|city| city.reservations.count}
   end
 
 end

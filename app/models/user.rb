@@ -5,21 +5,12 @@ class User < ActiveRecord::Base
   has_many :reviews, :foreign_key => 'guest_id'
   has_many :guests, :class_name => "User", :through => :reservations
 
-#guest => trips => listing => host 
-
   def hosts
-    self.trips.collect do |trip|
-      trip.listing.host  
-    end
+    self.trips.collect {|trip| trip.listing.host}
   end
 
-#host => listing => reviews
-
   def host_reviews
-
-    self.listings.collect do |listing|
-      listing.reviews
-    end.flatten
+    self.listings.collect {|listing| listing.reviews}.flatten
   end
 
 end

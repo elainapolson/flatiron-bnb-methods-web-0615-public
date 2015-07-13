@@ -22,11 +22,10 @@ class Neighborhood < ActiveRecord::Base
     valid_neighborhoods.max_by do |neighborhood|
       reservations_count[neighborhood.name] / listings_count[neighborhood.name]
     end
-
   end
 
   def self.most_res
-    joins(:listings => :reservations).group("neighborhoods.name").order("count (*) desc").first
+    Neighborhood.all.max_by {|neighborhood| neighborhood.reservations.count} 
   end
 
 end

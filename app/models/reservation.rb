@@ -16,6 +16,8 @@ class Reservation < ActiveRecord::Base
     self.duration * self.listing.price
   end
 
+ private
+
   def host_error
     if self.guest_id == self.listing.host_id
       errors.add(:host_error, "You can't book your own room, silly!")
